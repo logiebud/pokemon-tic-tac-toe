@@ -13,7 +13,7 @@
     <h1>Let's go Pokemon-tac-toe</h1>
     <p>Choose your pokemon</p>
 
-    <form action="/" accept-charset="utf-8">
+    <form action="/pokemon-tic-tac-toe/index.html" accept-charset="utf-8">
       <label>
         <span>Player 1</span>
         <select name="player1" id="player1">
@@ -27,7 +27,7 @@
       <button>Start Playing</button>
     </form>
     <script charset="utf-8">
-      const url = 'https://pokeapi.co/api/v2/pokemon/?limit=30&offset=0'
+      const url = 'https://pokeapi.co/api/v2/pokemon/?limit=150&offset=0'
       var player1Input = document.getElementById('player1');
       var player2Input = document.getElementById('player2');
 
