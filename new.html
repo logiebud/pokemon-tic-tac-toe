@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+    <style type="text/css" media="all">
+      body {
+        font-family: 'Luckiest Guy', cursive;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Let's go Pokemon-tac-toe</h1>
+    <p>Choose your pokemon</p>
+
+    <form action="/" accept-charset="utf-8">
+      <label>
+        <span>Player 1</span>
+        <select name="player1" id="player1">
+        </select>
+      </label>
+      <label>
+        <span>Player 2</span>
+        <select name="player2" id="player2">
+        </select>
+      </label>
+      <button>Start Playing</button>
+    </form>
+    <script charset="utf-8">
+      const url = 'https://pokeapi.co/api/v2/pokemon/?limit=30&offset=0'
+      var player1Input = document.getElementById('player1');
+      var player2Input = document.getElementById('player2');
+
+      fetch(url).then((x) => x.json()).then((x) => {
+        const pokemon = x.results.sort((a, b) => a.name.localeCompare(b.name));
+        pokemon.forEach((poke) => {
+          var option = `<option>${poke.name}</option>`
+          player1Input.innerHTML += option;
+          player2Input.innerHTML += option;
+        });
+      });
+    </script>
+  </body>
+</html>

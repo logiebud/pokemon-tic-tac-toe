@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pokemon Tic Tac Toe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+    <style type="text/css" media="all">
+        body {
+          font-family: 'Luckiest Guy', cursive;
+        }
+        .cell {
+          border: 1px solid black;
+          width: 150px;
+          height: 150px;
+        }
+        .cell.x {
+          background-color: blue;
+        }
+        .cell.o {
+          background-color: turquoise;
+        }
+        #error {
+          color: red;
+        }
+        .tile {
+          max-width: 150px;
+        }
+        main {
+          margin: 0 auto;
+        }
+        #menu {
+          float: left;
+        }
+        #turn {
+          font-size: 3em;
+        }
+        #restart {
+          display: none;
+          background-color: red;
+        }
+    </style>
+  </head>
+  <body>
+    <h1>Welcome to Tic Tac Toe</h1>
+    <main>
+      <div id="menu">
+        <div id="turn">
+          It's time for <span id="player"></span> to go.
+        </div>
+        <div id="error">
+        </div>
+      </div>
+      <div>
+
+        <table>
+          <tr>
+            <td id="cell1" class="cell"></td>
+            <td id="cell2" class="cell"></td>
+            <td id="cell3" class="cell"></td>
+          </tr>
+          <tr>
+            <td id="cell4" class="cell"></td>
+            <td id="cell5" class="cell"></td>
+            <td id="cell6" class="cell"></td>
+          </tr>
+          <tr>
+            <td id="cell7" class="cell"></td>
+            <td id="cell8" class="cell"></td>
+            <td id="cell9" class="cell"></td>
+          </tr>
+        </table>
+        <button type="submit" id="restart">Restart</button>
+      </div>
+    </main>
+    <script charset="utf-8">
+      let currentPlayer;
+      var player = document.getElementById('player');
+      var error = document.getElementById('error');
+      var turnDiv = document.getElementById('turn');
+      var restart = document.getElementById('restart');
+
+      restart.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location = '/new.html'
+      });
+
+      document.querySelectorAll('.cell').forEach(x => {
+        x.addEventListener('click', (e) => {
+          clicked(e.currentTarget)
+        })
+      })
+
+      const X = {
+        klass: 'x',
+        image: '',
+        render: function() {
+          return `<img class="tile" src="${this.image}">`;
+        }
+      }
+      const O = {
+        klass: 'o',
+        image: '',
+        render: function() {
+          return `<img class="tile" src="${this.image}">`;
+        }
+      }
+
+      const checkWinner = () => {
+        if(cell1.innerHTML != '' && allEqual([cell1, cell2, cell3])) {
+          return true;
+        }
+        if(cell4.innerHTML != '' && allEqual([cell4, cell5, cell6])) {
+          return true;
+        }
+        if(cell7.innerHTML != '' && allEqual([cell7, cell8, cell9])) {
+          return true;
+        }
+        if(cell1.innerHTML != '' && allEqual([cell1, cell4, cell7])) {
+          return true;
+        }
+        if(cell2.innerHTML != '' && allEqual([cell2, cell5, cell8])) {
+          return true;
+        }
+        if(cell3.innerHTML != '' && allEqual([cell3, cell6, cell9])) {
+          return true;
+        }
+        if(cell3.innerHTML != '' && allEqual([cell3, cell5, cell7])) {
+          return true;
+        }
+        if(cell1.innerHTML != '' && allEqual([cell1, cell5, cell9])) {
+          return true;
+        }
+      }
+      const checkOver = () => {
+        if(cell1.innerHTML != '' && allFilled([cell1, cell2, cell3, cell4, cell5, cell6, cell7, cell8, cell9])) {
+          return true;
+        }
+        return false;
+      }
+
+      const allFilled = (cells) => {
+        return !cells.map((x) => x.innerHTML).reduce((x) => { return x == "" })
+      }
+
+      const allEqual = (cells) => {
+        return cells[0].innerHTML == cells[1].innerHTML && cells[1].innerHTML == cells[2].innerHTML;
+      }
+
+      let winner;
+      const clicked = (x) => {
+        if(checkWinner()) {
+          error.innerText = 'Game over cant go any more';
+          return;
+        }
+
+        if(x.innerHTML != '') {
+          error.innerText = 'Cant go there, already taken!'
+          return;
+        } else {
+          error.innerText = '';
+        }
+
+        x.innerHTML = currentPlayer.render();
+        x.classList.add(currentPlayer.klass);
+
+        if(checkWinner()) {
+          turnDiv.innerHTML = `The winner is... ${currentPlayer.render()}<h1>Game over!</h1>`;
+          winner = currentPlayer;
+        }
+        if(checkWinner() || checkOver()) {
+          restart.style.display = 'block';
+        }
+
+        currentPlayer = (currentPlayer == X ? O : X);
+        player.innerHTML = currentPlayer.render();
+      }
+      currentPlayer = X;
+      player.innerHTML = currentPlayer.render();
+
+      var params = new URLSearchParams(window.location.search);
+      var player1PokeName = params.get('player1');
+      var player2PokeName = params.get('player2');
+
+      function setPokemon(name, p) {
+        return fetch(`https://pokeapi.co/api/v2/pokemon/${name}/`).then(x => x.json()).then((poke) => {
+          p.image = poke.sprites.front_default;
+          player.innerHTML = currentPlayer.render();
+        });
+      }
+      setPokemon(player1PokeName, O);
+      setPokemon(player2PokeName, X);
+    </script>
